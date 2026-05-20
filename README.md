@@ -74,8 +74,9 @@ ai-prototyping-workflow/
 │   ├── PROGRESS.md           ← living state + final outcome decision
 │   └── ARCHITECTURE.md       ← generated at the end (if the prototype continues)
 └── docs/
-    ├── full-proposal.md      ← the full reasoning, for depth
-    └── quickstart.md         ← walkthrough of your first prototype
+    ├── how-it-works.md       ← plain-English orientation; start here
+    ├── quickstart.md         ← walkthrough of your first prototype
+    └── full-proposal.md      ← the full reasoning, for depth
 ```
 
 ---
@@ -135,7 +136,7 @@ These are the four moments where the workflow stops and waits for a human. Skip 
 5. **Run the loop**: `analyst` validates the spec → `architect` plans → `planner` phases it → `implementer` builds each phase (the `reviewer` checks each) → demo and record the Outcome → `reviewer` hardens **only if you're keeping it**.
 6. **Update `PROGRESS.md`** after every phase. This is the single most important habit.
 
-For a complete walkthrough, see [`docs/quickstart.md`](docs/quickstart.md). For the full reasoning behind every design choice, see [`docs/full-proposal.md`](docs/full-proposal.md).
+New to the workflow? Read [`docs/how-it-works.md`](docs/how-it-works.md) first — a plain-English walkthrough with a diagram. Then [`docs/quickstart.md`](docs/quickstart.md) for the exact commands, and [`docs/full-proposal.md`](docs/full-proposal.md) for the reasoning behind every design choice.
 
 ---
 
