@@ -42,7 +42,7 @@ Always prefer official sources. Avoid Stack Overflow answers and tutorial blogs 
 
 Save to `specs/<feature>/refs/<library>.md`. The structure:
 
-```md
+````md
 # <Library Name> — Reference for <feature>
 
 **Version:** <version from plan.md>
@@ -94,7 +94,7 @@ Anti-patterns or deprecated APIs from the docs.
 ## Open questions
 
 Things the docs don't make clear. The implementer should ask before guessing.
-```
+````
 
 ### Step 4 — Stop
 
