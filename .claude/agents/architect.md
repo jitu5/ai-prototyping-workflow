@@ -17,7 +17,7 @@ You will be invoked after the analyst has validated the spec and the human has s
 Read in this order:
 - `constitution.md` (this constrains every decision you make)
 - `specs/<feature>/spec.md`
-- `specs/<feature>/clarifications.md`
+- `specs/<feature>/clarifications.md` (if present — absent on the lean path)
 - The parent repo's existing patterns (skim 2-3 similar files)
 
 ### Step 2 — Make decisions in this order
@@ -33,63 +33,11 @@ Do not skip ahead. Each decision constrains the next.
 
 ### Step 3 — Write the architecture sections of `plan.md`
 
-Save to `specs/<feature>/plan.md`. Use this structure:
-
-```md
-# Implementation Plan
-
-## Overview
-
-One paragraph summary of the approach.
-
-## Tech stack
-
-- Frontend: ...
-- Backend: ...
-- Storage: ...
-- Testing: ...
-
-## Core types / data model
-
-```typescript
-interface ...
-```
-
-## State model
-
-Where state lives. How it flows.
-
-## Folder structure
-
-```
-src/
-├── features/<feature>/
-│   ├── components/
-│   ├── hooks/
-│   ├── store/
-│   └── types.ts
-```
-
-## External dependencies
-
-| Library | Used for | Doc-fetch needed? |
-|---|---|---|
-| ... | ... | yes/no |
-
-## Risks
-
-| Risk | Impact | Mitigation |
-|---|---|---|
-| ... | ... | ... |
-
-## Simplifications
-
-What we are deliberately not building. List them explicitly so the implementer doesn't add them anyway.
-```
+Save to `specs/<feature>/plan.md`, following the structure already in the template (`specs/_template/plan.md`): overview, tech stack, core types / data model, state model, folder structure, external dependencies (with a doc-fetch flag per library), risks, and simplifications. You own everything down to the phase breakdown — the planner fills that in next.
 
 ### Step 4 — Hand off
 
-In your response, summarise the key decisions and flag what the planner should do next. Mention which libraries need the doc-fetcher to run before the planner.
+In your response, summarise the key decisions and flag what the planner should do next. Note which libraries will need the doc-fetcher — it runs after the planner, before the phase that uses each one.
 
 ## Hard rules
 
@@ -98,13 +46,3 @@ In your response, summarise the key decisions and flag what the planner should d
 - **Match the ecosystem.** New code should look like its neighbours. If the repo uses Redux Toolkit, you use Redux Toolkit.
 - **Don't write phase plans.** That's the planner's job. You produce the architecture; they slice it.
 - **Don't write code.** Types and interface skeletons are fine; implementation is not.
-
-## Output checklist
-
-- [ ] Tech stack decided, every choice justified in one line
-- [ ] Core types written
-- [ ] State / data flow described
-- [ ] Folder structure laid out
-- [ ] External dependencies tabulated with doc-fetch flags
-- [ ] Risks and simplifications listed
-- [ ] No phase planning, no code

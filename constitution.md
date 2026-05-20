@@ -79,9 +79,8 @@ A phase is done when:
 The whole prototype is done when:
 
 - [ ] All phases are complete
-- [ ] Refactor passes (duplication, dead code, simplification) are done with tests green
-- [ ] `ARCHITECTURE.md` is generated
-- [ ] `learning.md` is written with a Continue / Rework / Stop / Productise decision
+- [ ] The Outcome (Continue / Rework / Stop / Productise) is recorded in `PROGRESS.md` after the demo
+- [ ] If the outcome is Continue or Productise: refactor passes (duplication, dead code, simplification) are done with tests green, and `ARCHITECTURE.md` is generated
 
 ---
 

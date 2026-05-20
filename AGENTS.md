@@ -6,17 +6,20 @@
 
 A prototype built using the AI-Native Prototyping Workflow. See `README.md` for the workflow overview and `docs/full-proposal.md` for the reasoning.
 
-## Required reading before any work
+## Required reading
 
-Before making changes, read in this order:
+`constitution.md` applies to every agent at every stage — read it first, always.
 
-1. `constitution.md` — the non-negotiable rules
-2. `specs/<feature>/spec.md` — what we're building and why
-3. `specs/<feature>/plan.md` — how we're building it
-4. `specs/<feature>/phases/phase-N-tasks.md` — the current phase only
-5. `PROGRESS.md` — what's already been done and what's deferred
+Before writing any code (the implementer's job), also read, in this order:
 
-If any of these files are missing, do not start implementation. Ask which stage of the workflow is missing.
+1. `specs/<feature>/spec.md` — what we're building and why
+2. `specs/<feature>/plan.md` — how we're building it
+3. `specs/<feature>/phases/phase-N-tasks.md` — the current phase only
+4. `PROGRESS.md` — what's already been done and what's deferred
+
+If any of these are missing at implementation time, stop and ask which stage hasn't been done yet. Earlier stages naturally run before some of these exist (the analyst writes the spec; the architect and planner write the plan and phases) — each reads whatever is already present.
+
+> `PROGRESS.md` is the living state file. In this starter repo it ships as `templates/PROGRESS.md`; in a prototype repo, copy it to the root before implementation begins (see `docs/quickstart.md` Step 0).
 
 ## Working rules
 

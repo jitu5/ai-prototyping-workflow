@@ -41,10 +41,10 @@ Before generalising, the lessons from our own two-week prototype, in plain terms
 - **Requirement validation up front** — asking the model to repeat back the requirement before any planning. This catches misinterpretation while it's cheap.
 - Spending **4–5 days on the plan**, not the code. The plan went through four iterations. This was the real engineering work.
 - Splitting the build into **~12 phases**, each scoped to fit inside one ~200K context window.
-- A **`context.md` handoff file** written at the end of each phase: what was built, what files exist, what's still pending, what was deferred. The next session reads this instead of "remembering."
+- A **`context.md` handoff file** written at the end of each phase: what was built, what files exist, what's still pending, what was deferred. The next session reads this instead of "remembering." (In this workflow that file is standardised as **`PROGRESS.md`**.)
 - Pre-fetching **library documentation** (React Flow) and feeding the URLs as context, so the agent didn't waste tokens crawling docs.
 - A **dedicated refactor cycle** (duplications → dead code → simplification), with tests as the safety net.
-- Ending with a **`PROJECT_ARCHITECTURE.md`** so future changes have a map.
+- Ending with a **`PROJECT_ARCHITECTURE.md`** so future changes have a map. (Standardised here as **`ARCHITECTURE.md`**.)
 
 **What didn't work first time**
 
@@ -95,9 +95,9 @@ Eight stages, organised into three loops. The arrows are where humans must appro
 └─────────────────────────────────────────────────────────────────┘
                                 ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│  Loop 3: HARDEN (once all phases done)                          │
+│  Loop 3: SHIP (once all phases done)                            │
 │                                                                 │
-│   8. Refactor & Document                                        │
+│   Demo → record Outcome → if keeping: Harden + Document         │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -141,7 +141,7 @@ Eight stages, organised into three loops. The arrows are where humans must appro
 
 **Goal:** Force ambiguities out before they become bugs.
 
-**Output:** A clarifications section appended to `spec.md`.
+**Output:** `specs/<feature>/clarifications.md` — questions and their answers, kept alongside the spec.
 
 The agent reads the spec and asks structured questions: "What happens if the user drags a node that already exists?", "Should the autosave run on every change or debounced?", "What's the empty state?"
 
@@ -159,7 +159,7 @@ This is the stage we skipped on Kedro Builder, and it's why mid-implementation w
 
 1. **Tech stack** — versions, libraries, why. Reject overkill.
 2. **Architecture** — types, state shape (e.g. Redux slices), folder structure, key interfaces.
-3. **External dependencies** — list every library we'll lean on. For big ones (React Flow, PySpark), the **Doc-Fetcher agent** pulls the relevant API surface and saves it as `specs/<feature>/refs/<library>.md`. This is the trick that unblocked the canvas work on Kedro Builder.
+3. **External dependencies** — list every library we'll lean on and flag the big ones (React Flow, PySpark) for the **Doc-Fetcher**. The fetch itself happens later — after the phase breakdown, just before the phase that needs each library — saving the API surface to `specs/<feature>/refs/<library>.md`. This is the trick that unblocked the canvas work on Kedro Builder.
 4. **Phase breakdown** — slice the work so each phase fits a single Claude Code session. Rule of thumb: a phase is ~200–600 lines of new code, or one cohesive layer (types, then state, then UI, then integration).
 5. **Cross-phase contracts** — the types and interfaces that get fixed in Phase 1 and that all later phases honour.
 
@@ -217,65 +217,25 @@ Three checks, automated by agents but signed off by human:
 2. **Visual check** (frontend only). The Visual-Check agent takes a screenshot via Playwright/MCP and compares against the brand reference. Kedro Builder skipped this and paid for it.
 3. **Spec drift check.** The Reviewer agent re-reads the spec and confirms the phase's output matches the acceptance criteria. If it doesn't, either the spec changes (deliberate) or the code changes (corrective).
 
-### Stage 8 — Harden
+### Stage 8 — Harden (only if the prototype lives on)
 
-Once all phases are done, three refactor passes (the Kedro Builder pattern, now codified):
+Once all phases are done and approved, demo the prototype and record the **Outcome** in `PROGRESS.md` — an explicit Continue / Rework / Stop / Productise decision. A prototype that taught us nothing on record taught us nothing.
+
+If the verdict is **Rework or Stop**, you're done — don't polish a prototype you're not keeping.
+
+If the verdict is **Continue or Productise**, harden it with three refactor passes (the Kedro Builder pattern, now codified):
 
 1. **Duplication pass** — Reviewer agent finds and reports duplicate logic; Refactorer agent consolidates with tests as guardrail.
 2. **Dead-code pass** — anything generated and then abandoned across phases.
 3. **Simplification pass** — readability, naming, file-size sanity.
 
-Behaviour must not change. Tests are the contract. Then:
-
-- Generate `ARCHITECTURE.md` (the living map of the system).
-- Update `CLAUDE.md` if patterns emerged that future work should follow.
+Behaviour must not change. Tests are the contract. Then generate `ARCHITECTURE.md` (the living map of the system), and update `CLAUDE.md` if patterns emerged that future work should follow.
 
 ---
 
 ## The agent team
 
-Six agents, organised into three squads. All are Claude Code subagents defined as markdown files in `.claude/agents/`, committed to the repo so the whole team uses the same definitions.
-
-### Planning squad (runs in Loop 1)
-
-**1. Analyst**
-- *Job:* Reads user story + acceptance criteria, validates them back to the human, surfaces ambiguities.
-- *Produces:* Clarification questions, updated `spec.md`.
-- *When to use:* Stage 2 and 3.
-
-**2. Architect**
-- *Job:* Decides tech stack, types, state shape, folder structure. Enforces constitution.
-- *Produces:* `plan.md` sections 1–3.
-- *When to use:* Stage 4, first half.
-
-**3. Planner**
-- *Job:* Takes the architecture and breaks the work into context-window-sized phases with explicit dependencies.
-- *Produces:* `plan.md` phase breakdown + `phase-N-tasks.md`.
-- *When to use:* Stage 4 second half, and Stage 5.
-
-### Build squad (runs in Loop 2)
-
-**4. Doc-Fetcher**
-- *Job:* For any external library mentioned in the plan, fetch and summarise the relevant API into `refs/<library>.md`. Stops the implementer from doing live web crawling mid-build.
-- *Produces:* Summarised API references.
-- *When to use:* Before any phase that touches a non-trivial external library.
-
-**5. Implementer**
-- *Job:* Builds one phase. Writes code + tests. Updates `PROGRESS.md` at session end.
-- *Produces:* Working phase, tests, PROGRESS update.
-- *When to use:* Stage 6, one fresh agent per phase.
-
-### Quality squad (runs in Loop 2 verify and Loop 3)
-
-**6. Reviewer / Refactorer** (can be one agent with two modes, or split)
-- *Job:* Spec-drift check after each phase. Duplication/dead-code/simplification passes after all phases done.
-- *Produces:* Review report, refactor commits with tests still green.
-- *When to use:* Stage 7 (per phase) and Stage 8 (final).
-
-**Optional 7th: Visual-Check** (frontend only)
-- *Job:* Screenshot the running app and compare against brand/design references.
-- *Produces:* Visual diff report.
-- *When to use:* Stage 7 for any UI-touching phase.
+Six agents (plus an optional seventh for frontend work), each with one clear, non-overlapping job — defined as Claude Code subagents in `.claude/agents/` and committed so the whole team shares them. The full table (who does what, when to invoke, what each produces) is the [agent-team section of the README](../README.md#the-agent-team) — that's the reference you'll return to. The argument for the line-up is below.
 
 ### Why six and not 11 or 20
 
@@ -349,7 +309,7 @@ A six-week rollout. Slow enough to learn, fast enough to feel real.
 
 ### Week 2 — Templates and tooling
 
-- Build the shared `.specify/` and `.claude/agents/` directories
+- Build the shared `specs/` and `.claude/agents/` directories
 - Draft `constitution.md` for each repo type:
   - `kedro-viz` (React/TS frontend)
   - `kedro-builder` (React/TS app)
@@ -391,67 +351,13 @@ A six-week rollout. Slow enough to learn, fast enough to feel real.
 - *Mitigation:* The Reviewer agent runs a spec-drift check at the end of every phase. Drift is either corrected (spec was right) or absorbed (code was right and spec updates).
 
 **Risk: the workflow becomes the work.** Spending more time on ceremony than coding.
-- *Mitigation:* The workflow has explicit "lean path" — for genuinely tiny features, skip Clarify and Tasks, go straight from Spec → Plan → Implement. Reserve the full pipeline for anything you'd hesitate to one-shot.
+- *Mitigation:* The workflow has an explicit "lean path" — for genuinely tiny features, skip the Clarify stage (no `clarifications.md`) and collapse the plan to a single phase with one lightweight `phase-1-tasks.md`. You still go Spec → Plan → Implement, and the implementer still gets its one required task file. Reserve the full pipeline for anything you'd hesitate to one-shot.
 
 **Risk: tool lock-in.** What if Claude Code changes or we want to use Cursor?
 - *Mitigation:* Everything lives as plain markdown in the repo (`AGENTS.md`, `CLAUDE.md`, `constitution.md`, `spec.md`, `plan.md`, `PROGRESS.md`). Tool-specific config is minimal. The work product is portable.
 
 **Risk: junior engineers becoming passive.** Just clicking "approve" without thinking.
 - *Mitigation:* The four human gates require a written justification, not a thumbs-up. Code review still happens. The agent is a multiplier, not a replacement.
-
----
-
-## One-page cheat sheet
-
-A poster-sized version of the workflow for the team wall:
-
-```
-┌──────────────────────────────────────────────────────────────────┐
-│                                                                  │
-│  AI-NATIVE PROTOTYPING — THE LOOP                                │
-│                                                                  │
-│  ① CONSTITUTION    (Architect)    → constitution.md              │
-│       │                                                          │
-│       ▼                                                          │
-│  ② SPECIFY         (you + Analyst) → spec.md                     │
-│       │                                                          │
-│       ▼                                                          │
-│  ③ CLARIFY         (Analyst)       → spec.md updated             │
-│       │     ◀── HUMAN GATE: spec signed off                      │
-│       ▼                                                          │
-│  ④ PLAN            (Architect+Planner+Doc-Fetcher) → plan.md     │
-│       │     ◀── HUMAN GATE: plan reviewed (2–4 iterations)       │
-│       ▼                                                          │
-│  ┌─── FOR EACH PHASE ────────────────────────────────────┐       │
-│  │                                                       │       │
-│  │  ⑤ TASKS         (Planner)      → phase-N-tasks.md    │       │
-│  │  ⑥ IMPLEMENT     (Implementer)  → code + tests        │       │
-│  │  ⑦ VERIFY        (Reviewer)     → spec-drift check    │       │
-│  │     ↓                                                 │       │
-│  │     PROGRESS.md updated                               │       │
-│  │     ◀── HUMAN GATE: phase approved                    │       │
-│  │                                                       │       │
-│  └───────────────────────────────────────────────────────┘       │
-│       │                                                          │
-│       ▼                                                          │
-│  ⑧ HARDEN          (Reviewer/Refactorer) → clean code            │
-│                    + ARCHITECTURE.md                             │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
-
-KEY ARTEFACTS IN THE REPO
-─────────────────────────
-  constitution.md           Project rules (rarely changes)
-  CLAUDE.md / AGENTS.md     Pointer file for AI agents
-  .claude/agents/*.md       The six agent definitions
-  specs/<feature>/
-    spec.md                 What & why
-    plan.md                 How (tech, architecture)
-    phases/                 Phase plans + task lists
-    refs/                   Cached library docs
-  PROGRESS.md               Living state across phases
-  ARCHITECTURE.md           Final living map (generated at end)
-```
 
 ---
 

@@ -1,6 +1,6 @@
 # Implementation Plan: <Feature Name>
 
-> How we're building it. Owned by the architect (sections 1–6) and planner (sections 7+) agents. Reviewed by a human before any code is written.
+> How we're building it. Owned by the architect (architecture sections) and planner (phase breakdown onward) agents. Reviewed by a human before any code is written.
 
 ---
 
@@ -40,17 +40,17 @@ Where state lives. Who owns it. How it flows.
 
 ## Folder structure
 
+Where each piece lives. Match the parent repo's conventions — the tree below is just one shape.
+
 ```
-src/
-├── features/<feature>/
-│   ├── components/
-│   ├── hooks/
-│   ├── store/
-│   ├── types.ts
-│   └── index.ts
+<feature>/
+├── <entry point>
+├── <core types / data model>
+├── <logic — services / state / pipeline>
+└── <tests>
 ```
 
-Match the parent repo's conventions.
+For a React feature this is usually `components/`, `hooks/`, `store/`, `types.ts`; for a Python package, `__init__.py`, `models.py`, `pipeline.py`, `tests/`.
 
 ## External dependencies
 
@@ -96,18 +96,9 @@ What we are deliberately not building. List explicitly so the implementer doesn'
 - **Deliverable:** ...
 - **Verification:** ...
 
-_(add as many phases as needed; 3–12 is the normal range)_
+_(add as many phases as needed; 1–12, most features at 3–8 — a tiny prototype can be a single phase)_
 
 ---
-
-## Estimated effort
-
-| Phase | Estimated time | Confidence |
-|---|---|---|
-| 1 | 1 day | High |
-| 2 | 2 days | Medium |
-| ... | ... | ... |
-| **Total** | | |
 
 ## Open questions
 

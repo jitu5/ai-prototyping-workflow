@@ -52,7 +52,7 @@ Approve / Approve with notes / Send back to implementer
 
 ### When invoked
 
-After all phases are complete and approved. Before the prototype is demoed.
+After the demo, when the Outcome recorded in `PROGRESS.md` is Continue or Productise. (For a Rework or Stop verdict, harden is skipped — don't polish a prototype you're not keeping.)
 
 ### What to do
 
@@ -86,7 +86,7 @@ After each pass:
 - Confirm tests are still green
 - Commit message format: `refactor(<feature>): <pass> — <one-line summary>`
 
-After all three passes, generate `ARCHITECTURE.md` at the repo root. Use the template in `templates/ARCHITECTURE.md`.
+After all three passes, generate `ARCHITECTURE.md` at the repo root — but only if the prototype is being continued or productised (check the Outcome in `PROGRESS.md`). For a throwaway, skip it. Use the template in `templates/ARCHITECTURE.md`.
 
 ### Hard rules for harden mode
 
@@ -102,18 +102,3 @@ After all three passes, generate `ARCHITECTURE.md` at the repo root. Use the tem
 - Read the constitution before starting.
 - Run the test suite at the start to confirm a green baseline.
 - If you find something out of scope for your current mode, log it for the other mode rather than handle it yourself.
-
-## Output checklist
-
-For per-phase mode:
-- [ ] Tests run green
-- [ ] Diff reviewed against phase plan
-- [ ] Spec drift, scope creep, missing tests, missing PROGRESS entries checked
-- [ ] Cross-phase contracts checked
-- [ ] Recommendation given (Approve / Notes / Block)
-
-For harden mode:
-- [ ] Three passes completed in order
-- [ ] Tests green after each change
-- [ ] Commits structured one-pass-per-commit
-- [ ] `ARCHITECTURE.md` generated

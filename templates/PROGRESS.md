@@ -92,3 +92,13 @@ Important constraints to preserve across all phases.
 
 - Existing public API of `<module>` — external consumers depend on it
 - ...
+
+## Outcome
+
+> Filled in after the demo, once the prototype has served its purpose. This is the prototype's verdict — the most important line in this file.
+
+**Decision:** Continue / Rework / Stop / Productise
+**Why:** <one or two sentences>
+**Next step:** <what happens now, if anything>
+
+_If the decision is Continue or Productise, generate `ARCHITECTURE.md`. For Rework or Stop, skip it — a throwaway prototype doesn't need a map._

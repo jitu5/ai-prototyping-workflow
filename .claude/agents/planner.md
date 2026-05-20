@@ -17,7 +17,7 @@ After the architect has produced `plan.md` with tech stack, types, and folder st
 Read in this order:
 - `constitution.md`
 - `specs/<feature>/spec.md`
-- `specs/<feature>/clarifications.md`
+- `specs/<feature>/clarifications.md` (if present — absent on the lean path)
 - `specs/<feature>/plan.md` (this is your main input)
 
 ### Step 2 — Slice into phases
@@ -28,72 +28,15 @@ Use these rules:
 - **Phase 1 is always foundation.** Types, folder structure, empty skeleton that compiles or imports cleanly. The cross-phase contracts get fixed here.
 - **Phases have explicit dependencies.** Phase 3 can't start until Phase 2's output exists.
 - **Last phase is integration / polish**, not a new feature.
-- **3 to 12 phases is the normal range.** Fewer than 3, you probably don't need this workflow. More than 12, you're not slicing aggressively enough.
+- **1 to 12 phases.** Most features land at 3–8. A genuinely tiny prototype can be a single phase (the lean path) — don't force a split. More than 12 means you're not slicing aggressively enough.
 
 ### Step 3 — Append the phase breakdown to `plan.md`
 
-Add a section like this:
-
-```md
-## Phase breakdown
-
-### Phase 1 — Foundation
-- **Goal:** Project scaffold, core types, empty containers
-- **Deliverable:** App builds, types exported, no functionality yet
-- **Verification:** `npm run build` passes, types compile, basic layout renders
-- **Cross-phase contracts:** The interfaces defined here are locked for all later phases
-
-### Phase 2 — <next thing>
-- **Goal:** ...
-- **Depends on:** Phase 1
-- **Deliverable:** ...
-- **Verification:** ...
-
-...
-```
+Add a `## Phase breakdown` section using the format already in `specs/_template/plan.md`: one block per phase with goal, what it depends on, deliverable, and verification — plus, for Phase 1, the cross-phase contracts it locks.
 
 ### Step 4 — Generate task files
 
-For each phase, create `specs/<feature>/phases/phase-N-tasks.md`:
-
-```md
-# Phase N Tasks — <Phase Name>
-
-## Goal
-
-<One paragraph from the plan>
-
-## Tasks
-
-- [ ] Task 1 (touches: `src/types/...`)
-- [ ] Task 2 (touches: `src/store/...`)
-- [ ] Task 3 (touches: `src/components/...`)
-- [ ] Write tests for X
-- [ ] Update `PROGRESS.md`
-
-## Files expected to change
-
-- `src/types/<feature>.ts` — new
-- `src/store/<feature>Slice.ts` — new
-- `src/components/<feature>/` — new directory
-
-## Acceptance check
-
-- [ ] All listed tasks complete
-- [ ] All tests pass
-- [ ] Build / typecheck passes
-- [ ] `PROGRESS.md` updated
-
-## Out of scope for this phase
-
-- <Things that belong to later phases>
-- <Things that belong to the final harden pass>
-
-## Dependencies
-
-- Reads: <files from previous phases>
-- Provides: <interfaces / state slices this phase locks in>
-```
+For each phase, create `specs/<feature>/phases/phase-N-tasks.md` from the template at `specs/_template/phases/phase-template.md`: goal, depends-on, an ordered task list (each task naming the files it touches), files expected to change, acceptance check, out-of-scope items, cross-phase contracts, and notes for the implementer.
 
 Each task should be one commit's worth of work.
 
@@ -107,12 +50,3 @@ Summarise the phase count, the dependency chain, and which phases the doc-fetche
 - **No phase depends on itself.** No circular dependencies.
 - **Every phase has a verification step.** "Looks good" is not a verification step. Tests, build, or a smoke check.
 - **Don't write code.** Tasks describe the work; the implementer does it.
-
-## Output checklist
-
-- [ ] 3–12 phases defined
-- [ ] Each phase has a goal, deliverable, and verification
-- [ ] Phase 1 establishes the foundation and locks contracts
-- [ ] `phase-N-tasks.md` exists for every phase
-- [ ] Dependencies between phases are explicit
-- [ ] Cross-phase contracts called out in Phase 1

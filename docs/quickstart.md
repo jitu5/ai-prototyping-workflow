@@ -22,6 +22,7 @@ cp /path/to/ai-prototyping-workflow/CLAUDE.md .
 cp /path/to/ai-prototyping-workflow/constitution.md .
 cp -r /path/to/ai-prototyping-workflow/templates ./templates
 cp -r /path/to/ai-prototyping-workflow/specs ./specs
+cp templates/PROGRESS.md ./PROGRESS.md   # the living state file lives at the repo root
 ```
 
 You can also clone this repo and rename it, or use it as a GitHub template.
@@ -85,19 +86,7 @@ Expect 2–4 revisions. This is the part of the workflow that took us 4–5 days
 
 ---
 
-## Step 5 — Run the doc-fetcher (if needed)
-
-For each library flagged "doc-fetch needed: yes" in `plan.md`:
-
-```
-Use the doc-fetcher subagent to fetch React Flow API docs for the upcoming canvas phase
-```
-
-The doc-fetcher writes to `specs/my-feature/refs/<library>.md`. Skip this and the implementer will waste tokens crawling docs mid-build.
-
----
-
-## Step 6 — Run the planner
+## Step 5 — Run the planner
 
 ```
 Use the planner subagent to break plan.md into phases and generate task files
@@ -108,8 +97,21 @@ The planner adds the phase breakdown to `plan.md` and creates `phase-N-tasks.md`
 - Does each phase look like one context window's worth of work?
 - Does Phase 1 lock the cross-phase contracts?
 - Are dependencies between phases clear?
+- For a tiny prototype, a single phase is fine — don't force a split.
 
 > **Human gate 3:** You approve the plan before any code is written.
+
+---
+
+## Step 6 — Run the doc-fetcher (if needed)
+
+For each library flagged "doc-fetch needed: yes" in `plan.md`, run this *after* the planner and *before* the phase that uses the library — the doc-fetcher reads that phase's `phase-N-tasks.md`:
+
+```
+Use the doc-fetcher subagent to fetch React Flow API docs for the upcoming canvas phase
+```
+
+The doc-fetcher writes to `specs/my-feature/refs/<library>.md`. Skip this and the implementer will waste tokens crawling docs mid-build.
 
 ---
 
@@ -137,15 +139,34 @@ Use the reviewer subagent to check Phase 1 for spec drift
 
 The reviewer will Approve, Approve with notes, or Block.
 
+For any phase that touches UI, also run the visual-check subagent before approving:
+
+```
+Use the visual-check subagent to compare this phase against the brand reference
+```
+
+If there's no brand reference, visual-check will flag that and stop — add one or skip it explicitly.
+
 > **Human gate 4:** You approve each phase before the next one starts.
 
 Repeat for every phase.
 
 ---
 
-## Step 8 — Harden
+## Step 8 — Demo and capture the outcome
 
-Once all phases are complete:
+Once all phases are complete, the prototype is demo-ready. After the demo, record the **Outcome** in `PROGRESS.md`:
+
+- The Continue / Rework / Stop / Productise decision, plus one line on why
+- This decision gates the next step: harden only if you're keeping it
+
+---
+
+## Step 9 — Harden & document (only if the prototype continues)
+
+If the outcome is **Rework or Stop**, you're done — skip this step. Don't polish a prototype you're not keeping.
+
+If the outcome is **Continue or Productise**:
 
 ```
 Use the reviewer subagent in harden mode to run the three refactor passes
@@ -155,28 +176,9 @@ The reviewer will:
 - Pass 1 — Find and consolidate duplication
 - Pass 2 — Remove dead code
 - Pass 3 — Simplify for readability
-- Generate `ARCHITECTURE.md`
+- Generate `ARCHITECTURE.md` from `templates/ARCHITECTURE.md`
 
 Tests stay green throughout.
-
----
-
-## Step 9 — Visual check (frontend only)
-
-```
-Use the visual-check subagent to compare the prototype against the brand reference
-```
-
-If there's no brand reference, the visual-check will flag that and stop. Either add one or skip this step explicitly.
-
----
-
-## Step 10 — Demo and capture learning
-
-The prototype is now demo-ready. After the demo:
-
-- Write a `learning.md` capturing what worked, what didn't, what the team should do next
-- Make the Continue / Rework / Stop / Productise call
 
 ---
 
@@ -205,4 +207,4 @@ The prototype is now demo-ready. After the demo:
 
 ## Your second prototype onwards
 
-Steps 0 and 1 (forking + constitution) only happen once per repo. Steps 2–10 become routine. By your third prototype, the workflow disappears into the background and you're just shipping prototypes fast.
+Steps 0 and 1 (forking + constitution) only happen once per repo. Steps 2–9 become routine. By your third prototype, the workflow disappears into the background and you're just shipping prototypes fast.

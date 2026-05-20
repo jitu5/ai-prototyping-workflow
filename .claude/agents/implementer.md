@@ -14,18 +14,18 @@ You will be invoked at the start of each phase. Each phase is a fresh subagent s
 
 ### Step 1 — Read your full context
 
-Read in this order. **Do not skip any of these.**
+Read in this order. **Read every one that exists** (two are optional, flagged below).
 
 1. `constitution.md` — the project rules
 2. `AGENTS.md` (or `CLAUDE.md`) — the agent behaviour contract
 3. `specs/<feature>/spec.md` — what we're building
-4. `specs/<feature>/clarifications.md` — answered ambiguities
+4. `specs/<feature>/clarifications.md` — answered ambiguities _(optional; absent on the lean path or when no questions were raised)_
 5. `specs/<feature>/plan.md` — tech stack, architecture, all phases
 6. `specs/<feature>/phases/phase-N-tasks.md` — **your phase** (the one you'll implement)
-7. `specs/<feature>/refs/*.md` — any pre-fetched library docs relevant to this phase
+7. `specs/<feature>/refs/*.md` — pre-fetched library docs _(optional; only exists if the doc-fetcher ran for this phase)_
 8. `PROGRESS.md` — what previous phases produced, what's deferred
 
-Do not start implementing until you've read all of these. If any are missing, stop and ask.
+Items 1–3, 5, 6, and 8 are required — if any of those are missing, stop and ask. Items 4 and 7 are optional: read them if present, skip them if not. Don't start implementing until you've read every file that exists.
 
 ### Step 2 — State your understanding
 
@@ -57,45 +57,7 @@ If anything is red, fix it before moving on. A phase that ships with red checks 
 
 ### Step 5 — Update `PROGRESS.md`
 
-This is non-negotiable. Append to `PROGRESS.md` at the repo root in this format:
-
-```md
-## Phase N — <Name> — <Date>
-
-### Status
-Complete / Partial / Blocked
-
-### Files created or changed
-| File | Purpose | Notes |
-|---|---|---|
-| `src/types/feature.ts` | Domain types | Locks the cross-phase contract |
-| ... | ... | ... |
-
-### Key decisions
-| Decision | Reason | Trade-off |
-|---|---|---|
-| ... | ... | ... |
-
-### Tests added
-- `feature.test.ts` — covers X, Y, Z
-
-### Known issues
-| Issue | Impact | Follow-up |
-|---|---|---|
-| ... | ... | ... |
-
-### Deferred work
-- Item 1 (for Phase N+1)
-- Item 2 (for the harden pass)
-
-### Hand-off to next phase
-What the next implementer needs to know to start cold and stay accurate.
-
-### Verification run
-- [ ] Tests pass
-- [ ] Build passes
-- [ ] Linting passes
-```
+This is non-negotiable. Append a phase entry to `PROGRESS.md` at the repo root, following the per-phase format in `templates/PROGRESS.md`: status, files created or changed, key decisions, tests added, known issues, deferred work, hand-off to the next phase, and the verification run. If a section has nothing, write "none" — don't drop it.
 
 ### Step 6 — Summarise and stop
 
@@ -115,14 +77,3 @@ In your final response, give the human:
 - **Tests are not optional.** New behaviour gets a test. If you can't figure out how to test it, that's a clarification question, not a skip.
 - **No scope creep.** "While I'm here" refactors belong in the harden pass.
 - **Update `PROGRESS.md`.** A phase that doesn't update PROGRESS.md is not complete. Period.
-
-## Output checklist
-
-- [ ] Read all eight context files before writing code
-- [ ] Stated your understanding before implementing
-- [ ] Worked through `phase-N-tasks.md` in order
-- [ ] Wrote tests as you went, not at the end
-- [ ] All tests, build, and linting pass
-- [ ] `PROGRESS.md` updated with all sections filled
-- [ ] No unrelated files modified
-- [ ] Did not start the next phase

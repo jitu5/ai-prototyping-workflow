@@ -43,9 +43,9 @@ It is based on what worked when we built [Kedro Builder](https://github.com/kedr
 └─────────────────────────────────────────────────────────────────┘
                                 ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│  Loop 3: HARDEN (once all phases done)                          │
+│  Loop 3: SHIP (once all phases done)                            │
 │                                                                 │
-│   8. Refactor & Document → ARCHITECTURE.md                      │
+│   Demo → record Outcome → if keeping: Harden + Document         │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -57,8 +57,8 @@ It is based on what worked when we built [Kedro Builder](https://github.com/kedr
 ai-prototyping-workflow/
 ├── README.md                 ← you are here
 ├── constitution.md           ← fork this per project; defines the rules
-├── AGENTS.md / CLAUDE.md     ← tells AI agents how to behave in the repo
-├── .claude/agents/           ← the 6 agent definitions (subagents)
+├── AGENTS.md / CLAUDE.md     ← agent contract (AGENTS.md is source; CLAUDE.md points to it)
+├── .claude/agents/           ← 6 core agents + 1 optional (visual-check)
 │   ├── analyst.md
 │   ├── architect.md
 │   ├── planner.md
@@ -71,8 +71,8 @@ ai-prototyping-workflow/
 │   ├── plan.md
 │   └── phases/phase-template.md
 ├── templates/
-│   ├── PROGRESS.md           ← living state across phases
-│   └── ARCHITECTURE.md       ← generated at the end
+│   ├── PROGRESS.md           ← living state + final outcome decision
+│   └── ARCHITECTURE.md       ← generated at the end (if the prototype continues)
 └── docs/
     ├── full-proposal.md      ← the full reasoning, for depth
     └── quickstart.md         ← walkthrough of your first prototype
@@ -86,9 +86,9 @@ Six agents. Each has one clear job and produces a reviewable artefact, not a cha
 
 | Agent | Job | When to invoke | Produces |
 |---|---|---|---|
-| **analyst** | Validate the user story; ask clarifying questions | Stages 2–3 (Specify, Clarify) | `spec.md`, clarifications |
+| **analyst** | Validate the user story; ask clarifying questions | Stages 2–3 (Specify, Clarify) | `spec.md`, `clarifications.md` |
 | **architect** | Decide tech stack, types, state shape, folder structure | Stage 4 (Plan) | `plan.md` architecture sections |
-| **planner** | Break the plan into phases that fit one context window | Stage 4–5 (Plan, Tasks) | Phase breakdown + `tasks.md` |
+| **planner** | Break the plan into phases that fit one context window | Stage 4–5 (Plan, Tasks) | Phase breakdown + `phase-N-tasks.md` |
 | **doc-fetcher** | Fetch and summarise external library APIs | Before any phase with a non-trivial dependency | `specs/<feature>/refs/<lib>.md` |
 | **implementer** | Build one phase end-to-end with tests | Stage 6 (Implement) | Code, tests, `PROGRESS.md` update |
 | **reviewer** | Spec-drift check per phase, refactor passes at the end | Stages 7–8 (Verify, Harden) | Review notes, refactor commits |
@@ -104,12 +104,14 @@ Why six and not twenty: fewer, sharper agents beat more, fuzzier ones. The Anthr
 |---|---|---|---|
 | 1 | **Constitution** (one-off per project) | Architect / Tech Lead | `constitution.md` |
 | 2 | **Specify** | Engineer + Analyst agent | `spec.md` |
-| 3 | **Clarify** | Analyst agent | clarifications appended to `spec.md` |
+| 3 | **Clarify** | Analyst agent | `clarifications.md` |
 | 4 | **Plan** | Architect + Planner + Doc-Fetcher agents | `plan.md` + `phases/` |
 | 5 | **Tasks** | Planner agent | `phase-N-tasks.md` |
-| 6 | **Implement** (per phase) | Implementer agent | Code + tests |
-| 7 | **Verify** (per phase) | Reviewer agent (+ Visual-Check if UI) | `PROGRESS.md` updated |
-| 8 | **Harden** | Reviewer agent | Clean code + `ARCHITECTURE.md` |
+| 6 | **Implement** (per phase) | Implementer agent | Code + tests + `PROGRESS.md` updated |
+| 7 | **Verify** (per phase) | Reviewer agent (+ Visual-Check if UI) | Spec-drift review; phase signed off |
+| 8 | **Harden** (only if kept) | Reviewer agent | Clean code + `ARCHITECTURE.md` |
+
+> After all phases pass, demo the prototype and record the **Outcome** (Continue / Rework / Stop / Productise) in `PROGRESS.md`. Stage 8 runs only if that verdict is Continue or Productise — don't polish a prototype you're not keeping.
 
 ---
 
@@ -124,61 +126,16 @@ These are the four moments where the workflow stops and waits for a human. Skip 
 
 ---
 
-## What we automate vs where humans matter
-
-**Fully automated** (agent owns it): spec scaffolding, library doc fetching, boilerplate, test generation from acceptance criteria, mechanical refactors, doc generation, cross-artifact consistency checks.
-
-**Human-led, AI-assisted**: writing the actual user story, clarification answers, tech stack choices, plan reviews, visual/UX alignment, final code review.
-
-The honest split is about 70/30 — AI does most of the typing; humans do most of the deciding.
-
----
-
-## Works for any stack
-
-The workflow is stack-agnostic. For a Kedro plugin, a PySpark prototype, or a backend API, the same eight stages apply with three swaps:
-
-| Stage | Frontend | Backend / Python |
-|---|---|---|
-| Constitution | "React 18, TS strict, Redux Toolkit" | "Python 3.11, type hints, ruff, Kedro patterns" |
-| Plan — architecture | Component tree, Redux slices, routes | Module layout, data contracts, pipeline graph |
-| Verify | Screenshot + brand compare | Pipeline smoke-run + schema validation |
-| Doc-Fetcher targets | React Flow, shadcn, Tailwind | PySpark, Kedro DataSets, pandas, Pydantic |
-
-The shape of the workflow does not change. This matters because most of our team's work is data-pipeline-shaped, not UI-shaped.
-
----
-
 ## Getting started — your first prototype
 
 1. **Fork this repo** into your project.
 2. **Edit `constitution.md`** to match your stack (Python? TypeScript? Kedro?).
 3. **Copy `specs/_template/` to `specs/<your-feature>/`** and fill in `spec.md`.
 4. **Open Claude Code** in the repo. The agents in `.claude/agents/` are auto-discovered.
-5. **Run the loop**: ask the `analyst` to validate your spec, then the `architect` to plan, then the `planner` to phase it, then the `implementer` (one phase at a time), then the `reviewer` to harden.
+5. **Run the loop**: `analyst` validates the spec → `architect` plans → `planner` phases it → `implementer` builds each phase (the `reviewer` checks each) → demo and record the Outcome → `reviewer` hardens **only if you're keeping it**.
 6. **Update `PROGRESS.md`** after every phase. This is the single most important habit.
 
 For a complete walkthrough, see [`docs/quickstart.md`](docs/quickstart.md). For the full reasoning behind every design choice, see [`docs/full-proposal.md`](docs/full-proposal.md).
-
----
-
-## Team adoption — six weeks
-
-| Week | Goal |
-|---|---|
-| **1** | Pilot of one. One engineer, one greenfield feature, journal the friction. |
-| **2** | Build shared templates. Constitutions per repo type (Kedro-Viz, Builder, plugins, core). |
-| **3–4** | Two-team pilot. One frontend, one Python. Bi-weekly retro. |
-| **5** | Broaden — all new prototypes use the workflow. |
-| **6** | Stabilise — workflow becomes the default. Quarterly review thereafter. |
-
----
-
-## Why not just keep vibe coding?
-
-Anyone who has tried building something non-trivial with AI agents has hit the same wall: the first hour is magic, the fourth hour the model has forgotten decisions it made an hour ago. Without a written spec, the agent's interpretation drifts every session. Without phases, context rots. Without specialist agents, one over-eager generalist over-engineers everything.
-
-This workflow is the smallest set of habits that fixes those problems. It is not bureaucracy — it is the engineering process that makes AI speed actually compound instead of creating tech debt at machine speed.
 
 ---
 
