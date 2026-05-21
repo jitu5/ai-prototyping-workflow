@@ -57,7 +57,7 @@ If anything is red, fix it before moving on. A phase that ships with red checks 
 
 ### Step 5 — Update `PROGRESS.md`
 
-This is non-negotiable. Append a **terse** phase entry to `PROGRESS.md` at the repo root, following the format in `templates/PROGRESS.md` (built, files, decisions, tests, deferred/known issues, what the next phase needs to know, verified). Bullets, not essays. Also update the top sections — "Current state", "What works now", and "Cross-phase contracts" — if they changed. If a field has nothing, write "none".
+This is non-negotiable. Append a phase entry to `PROGRESS.md` at the repo root, following the per-phase format in `templates/PROGRESS.md`: status, files created or changed, key decisions, tests added, known issues, deferred work, hand-off to the next phase, and the verification run. Also keep the "Current state" and "What currently works" sections up to date. If a section has nothing, write "none" — don't drop it.
 
 ### Step 6 — Summarise and stop
 
