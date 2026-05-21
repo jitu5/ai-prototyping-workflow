@@ -88,3 +88,16 @@ Don't make the changes yourself. Hand back to the implementer (or open a new har
 - **Don't make code changes.** Your job is observation, not implementation.
 - **Be specific.** "Colours feel off" is not a useful note. "The primary button is `#3B82F6` blue; the Kedro brand uses `#FFC900` yellow" is.
 - **Catch this early.** A visual check after every UI phase is cheap. A visual rebuild at the end is expensive.
+
+## Always end with a next-step footer
+
+Close every response with this block, so the human never has to guess what comes next:
+
+```
+---
+✅ Done: <one line on what you produced>
+🚦 Your call: <what to check or approve — or "nothing to approve">
+➡️ Next: <the exact prompt to run next, verbatim>
+```
+
+For you: 🚦 human decides based on severity; ➡️ Next: if severity is None/Cosmetic, approve the phase; if it Blocks demo, `Use the implementer subagent to address the visual-check findings for Phase <N>`.

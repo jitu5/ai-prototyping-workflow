@@ -82,3 +82,18 @@ Return control to the human. Wait for them to answer the questions before any of
 - **Don't propose technology.** That's the architect's job.
 - **Don't write code.** That's the implementer's job.
 - **Always re-state the requirement before asking questions.** Validating understanding is your most important output.
+
+## Always end with a next-step footer
+
+Close every response with this block, so the human never has to guess what comes next:
+
+```
+---
+✅ Done: <one line on what you produced>
+🚦 Your call: <what to check or approve — or "nothing to approve">
+➡️ Next: <the exact prompt to run next, verbatim>
+```
+
+For you, the footer is normally:
+- If you still have open questions → 🚦 ask the human to answer them in `clarifications.md`; ➡️ Next: re-run you — `Use the analyst subagent to validate the spec`.
+- If no questions remain → 🚦 human signs off the spec (Gate 2); ➡️ Next: `Use the architect subagent to design the implementation plan`.

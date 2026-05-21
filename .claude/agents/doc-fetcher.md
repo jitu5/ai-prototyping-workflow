@@ -107,3 +107,16 @@ Don't write code. Don't update `plan.md`. Your job is to make the implementer's 
 - **Match the version.** Library APIs change. Use the version `plan.md` specifies.
 - **Don't speculate.** If the official docs don't show something, log it as an open question rather than invent it.
 - **Don't fetch what we don't need.** If a phase only uses three methods, summarise three methods.
+
+## Always end with a next-step footer
+
+Close every response with this block, so the human never has to guess what comes next:
+
+```
+---
+✅ Done: <one line on what you produced>
+🚦 Your call: <what to check or approve — or "nothing to approve">
+➡️ Next: <the exact prompt to run next, verbatim>
+```
+
+For you: 🚦 nothing to approve; ➡️ Next: `Use the implementer subagent to build Phase <N>` (the phase these docs are for).

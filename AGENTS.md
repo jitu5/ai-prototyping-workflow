@@ -29,6 +29,7 @@ If any of these are missing at implementation time, stop and ask which stage has
 - **Keep diffs small and reviewable.** A phase commit should be reviewable by a human in 10 minutes.
 - **Preserve existing behaviour during refactors.** Tests are the contract.
 - **Use the right subagent for the job.** See the agent table below. Don't have the implementer do clarification work, or the analyst write code.
+- **End every response with a next-step footer.** Each agent closes with `✅ Done` / `🚦 Your call` / `➡️ Next` so the human always knows the next action and never has to guess which agent or gate comes next.
 
 ## Subagent reference
 

@@ -102,3 +102,18 @@ After all three passes, generate `ARCHITECTURE.md` at the repo root — but only
 - Read the constitution before starting.
 - Run the test suite at the start to confirm a green baseline.
 - If you find something out of scope for your current mode, log it for the other mode rather than handle it yourself.
+
+## Always end with a next-step footer
+
+Close every response with this block, so the human never has to guess what comes next:
+
+```
+---
+✅ Done: <one line on what you produced>
+🚦 Your call: <what to check or approve — or "nothing to approve">
+➡️ Next: <the exact prompt to run next, verbatim>
+```
+
+For you, the footer depends on the mode:
+- **Per-phase mode:** 🚦 human approves the phase (Gate 4); ➡️ Next: if more phases remain, `Use the implementer subagent to build Phase <N+1>` (run the doc-fetcher first if that phase needs a library); if this was the **last** phase, demo the app and record the **Outcome** in `PROGRESS.md`.
+- **Harden mode:** 🚦 nothing to approve; ➡️ Next: run the final checks (`npm test`, build) — the prototype is done.

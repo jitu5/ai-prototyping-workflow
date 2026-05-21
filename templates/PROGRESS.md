@@ -22,7 +22,7 @@ End-user-visible behaviour that exists in the prototype right now.
 
 ## Phase log
 
-### Phase 1 — Foundation — 2025-MM-DD
+### Phase 1 — Foundation — YYYY-MM-DD
 
 **Status:** Complete
 

@@ -57,7 +57,7 @@ If anything is red, fix it before moving on. A phase that ships with red checks 
 
 ### Step 5 — Update `PROGRESS.md`
 
-This is non-negotiable. Append a phase entry to `PROGRESS.md` at the repo root, following the per-phase format in `templates/PROGRESS.md`: status, files created or changed, key decisions, tests added, known issues, deferred work, hand-off to the next phase, and the verification run. If a section has nothing, write "none" — don't drop it.
+This is non-negotiable. Append a **terse** phase entry to `PROGRESS.md` at the repo root, following the format in `templates/PROGRESS.md` (built, files, decisions, tests, deferred/known issues, what the next phase needs to know, verified). Bullets, not essays. Also update the top sections — "Current state", "What works now", and "Cross-phase contracts" — if they changed. If a field has nothing, write "none".
 
 ### Step 6 — Summarise and stop
 
@@ -77,3 +77,16 @@ In your final response, give the human:
 - **Tests are not optional.** New behaviour gets a test. If you can't figure out how to test it, that's a clarification question, not a skip.
 - **No scope creep.** "While I'm here" refactors belong in the harden pass.
 - **Update `PROGRESS.md`.** A phase that doesn't update PROGRESS.md is not complete. Period.
+
+## Always end with a next-step footer
+
+Close every response with this block, so the human never has to guess what comes next:
+
+```
+---
+✅ Done: <one line on what you produced>
+🚦 Your call: <what to check or approve — or "nothing to approve">
+➡️ Next: <the exact prompt to run next, verbatim>
+```
+
+For you: 🚦 nothing to approve yet — the reviewer checks first; ➡️ Next: `Use the reviewer subagent to check Phase <N> for spec drift` — and for a UI phase, also `Use the visual-check subagent to compare Phase <N> against the brand reference`.

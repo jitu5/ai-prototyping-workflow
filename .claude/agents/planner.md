@@ -50,3 +50,16 @@ Summarise the phase count, the dependency chain, and which phases the doc-fetche
 - **No phase depends on itself.** No circular dependencies.
 - **Every phase has a verification step.** "Looks good" is not a verification step. Tests, build, or a smoke check.
 - **Don't write code.** Tasks describe the work; the implementer does it.
+
+## Always end with a next-step footer
+
+Close every response with this block, so the human never has to guess what comes next:
+
+```
+---
+✅ Done: <one line on what you produced>
+🚦 Your call: <what to check or approve — or "nothing to approve">
+➡️ Next: <the exact prompt to run next, verbatim>
+```
+
+For you: 🚦 human reviews and approves the plan (Gate 3); ➡️ Next: if a phase needs an external library, `Use the doc-fetcher subagent to fetch <library> docs for that phase` first — otherwise `Use the implementer subagent to build Phase 1`.

@@ -2,6 +2,8 @@
 
 A walkthrough for the first time you use this workflow end-to-end. Plan for half a day of setup on your first run; subsequent prototypes will be much faster.
 
+> **Tiny, throwaway feature?** You don't need the full pipeline. Jump to [The lean path](#the-lean-path-for-tiny-prototypes) at the bottom — same gates, far less ceremony.
+
 ---
 
 ## Prerequisites
@@ -202,6 +204,20 @@ Tests stay green throughout.
 - **Phase too big, ran out of context** → Stop. Re-run the planner to split the phase.
 - **Tests red after the implementer "finished"** → Phase is not done. Send back to the implementer with the failing test list.
 - **Implementer changed files outside the phase's scope** → Send back. Ask why. Either accept the change with an updated plan, or revert.
+
+---
+
+## The lean path (for tiny prototypes)
+
+For a genuinely small, throwaway prototype, the full pipeline is overkill. Keep the **gates**, drop the **ceremony**:
+
+1. **Constitution** — reuse the repo's existing one; don't write a new one.
+2. **Spec** — fill in `spec.md`. **Skip Clarify** (no `clarifications.md`) unless something is genuinely ambiguous. → 🚦 sign off the spec.
+3. **Plan + one phase** — run the architect, then the planner, and accept a **single `phase-1-tasks.md`** — don't force a split. → 🚦 review the plan.
+4. **Build** — `Use the implementer subagent to build Phase 1`, then `Use the reviewer subagent to check Phase 1`. → 🚦 approve.
+5. **Ship** — demo it and record the **Outcome** in `PROGRESS.md`. For a throwaway the Outcome is usually Stop or Rework, so you **skip Harden and `ARCHITECTURE.md`** entirely.
+
+`PROGRESS.md` stays short — one phase entry plus the Outcome. That's the whole thing: **spec → plan → one phase → progress → outcome**, four quick gates, no multi-phase machinery.
 
 ---
 

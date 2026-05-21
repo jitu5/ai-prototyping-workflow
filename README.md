@@ -137,3 +137,5 @@ These are the four moments where the workflow stops and waits for a human. Skip 
 6. **Update `PROGRESS.md`** after every phase. This is the single most important habit.
 
 New to the workflow? Read [`docs/how-it-works.md`](docs/how-it-works.md) first — a plain-English walkthrough with a diagram. Then [`docs/quickstart.md`](docs/quickstart.md) for the exact commands, and [`docs/full-proposal.md`](docs/full-proposal.md) for the reasoning behind every design choice.
+
+**Tiny, throwaway prototype?** Use the lean path — same four gates, far less ceremony (skip Clarify, one phase, short `PROGRESS.md`). See [`docs/quickstart.md`](docs/quickstart.md#the-lean-path-for-tiny-prototypes).
